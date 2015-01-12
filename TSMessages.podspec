@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
 The notification moves from the top of the screen underneath the navigation bar and stays there for a few seconds, depending on the length of the displayed text. To dismiss a notification before the time runs out, the user can swipe it to the top or just tap it.
 There are 4 different types already set up for you: Success, Error, Warning, Message.
                    DESC
-  s.homepage     = "https://github.com/toursprung/TSMessages/"
+  s.homepage     = "https://github.com/timothychong/TSMessages/"
   
   s.license          = 'MIT'
   s.author           = { "Felix Krause" => "krausefx@gmail.com" }
