@@ -3,6 +3,7 @@
 //  Felix Krause
 //
 //  Created by Felix Krause on 24.08.12.
+//  Editied by Darryl L Johnson on 01/12/2015
 //  Copyright (c) 2012 Felix Krause. All rights reserved.
 //
 
@@ -164,30 +165,17 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
             image = [UIImage imageNamed:[current valueForKey:@"imageName"]];
         }
         
-        if (![TSMessage iOS7StyleEnabled])
-        {
-            self.alpha = 0.0;
-            
-            // add background image here
-            UIImage *backgroundImage = [UIImage imageNamed:[current valueForKey:@"backgroundImageName"]];
-            backgroundImage = [backgroundImage stretchableImageWithLeftCapWidth:0.0 topCapHeight:0.0];
-            
-            _backgroundImageView = [[UIImageView alloc] initWithImage:backgroundImage];
-            self.backgroundImageView.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
-            [self addSubview:self.backgroundImageView];
-        }
-        else
-        {
-            // On iOS 7 and above use a blur layer instead (not yet finished)
-            _backgroundBlurView = [[TSBlurView alloc] init];
-            self.backgroundBlurView.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
-            self.backgroundBlurView.blurTintColor = [UIColor colorWithHexString:current[@"backgroundColor"]];
-            [self addSubview:self.backgroundBlurView];
-        }
+        UIImage *backgroundImage = image;
+        image = nil;
+        backgroundImage = [backgroundImage stretchableImageWithLeftCapWidth:0.0 topCapHeight:0.0];
+        
+        _backgroundImageView = [[UIImageView alloc] initWithImage:backgroundImage];
+        self.backgroundImageView.autoresizingMask = (UIViewAutoresizingFlexibleWidth);
+        [self addSubview:self.backgroundImageView];
+
         
         UIColor *fontColor = [UIColor colorWithHexString:[current valueForKey:@"textColor"]
                                                    alpha:1.0];
-        
         
         self.textSpaceLeft = 2 * padding;
         if (image) self.textSpaceLeft += image.size.width + 2 * padding;
@@ -195,18 +183,10 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
         // Set up title label
         _titleLabel = [[UILabel alloc] init];
         [self.titleLabel setText:title];
-        [self.titleLabel setTextColor:fontColor];
+        [self.titleLabel setTextColor:[UIColor whiteColor]];
         [self.titleLabel setBackgroundColor:[UIColor clearColor]];
-        CGFloat fontSize = [[current valueForKey:@"titleFontSize"] floatValue];
-        NSString *fontName = [current valueForKey:@"titleFontName"];
-        if (fontName != nil) {
-            [self.titleLabel setFont:[UIFont fontWithName:fontName size:fontSize]];
-        } else {
-            [self.titleLabel setFont:[UIFont boldSystemFontOfSize:fontSize]];
-        }
-        [self.titleLabel setShadowColor:[UIColor colorWithHexString:[current valueForKey:@"shadowColor"] alpha:1.0]];
-        [self.titleLabel setShadowOffset:CGSizeMake([[current valueForKey:@"shadowOffsetX"] floatValue],
-                                                    [[current valueForKey:@"shadowOffsetY"] floatValue])];
+        [self.titleLabel setFont:[UIFont fontWithName:@"Roboto-Medium" size:17]];
+        
         self.titleLabel.numberOfLines = 0;
         self.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
         [self addSubview:self.titleLabel];
@@ -222,17 +202,9 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
             {
                 contentTextColor = fontColor;
             }
-            [self.contentLabel setTextColor:contentTextColor];
+            [self.contentLabel setTextColor:[UIColor whiteColor]];
             [self.contentLabel setBackgroundColor:[UIColor clearColor]];
-            CGFloat fontSize = [[current valueForKey:@"contentFontSize"] floatValue];
-            NSString *fontName = [current valueForKey:@"contentFontName"];
-            if (fontName != nil) {
-                [self.contentLabel setFont:[UIFont fontWithName:fontName size:fontSize]];
-            } else {
-                [self.contentLabel setFont:[UIFont systemFontOfSize:fontSize]];
-            }
-            [self.contentLabel setShadowColor:self.titleLabel.shadowColor];
-            [self.contentLabel setShadowOffset:self.titleLabel.shadowOffset];
+            [self.contentLabel setFont:[UIFont fontWithName:@"Roboto" size:15]];
             self.contentLabel.lineBreakMode = self.titleLabel.lineBreakMode;
             self.contentLabel.numberOfLines = 0;
             
@@ -339,7 +311,7 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
         {
             UISwipeGestureRecognizer *gestureRec = [[UISwipeGestureRecognizer alloc] initWithTarget:self
                                                                                              action:@selector(fadeMeOut)];
-            [gestureRec setDirection:((self.messagePosition == TSMessageNotificationPositionTop || self.messagePosition == TSMessageNotificationPositionNavBarOverlay)?
+            [gestureRec setDirection:(self.messagePosition == TSMessageNotificationPositionTop ?
                                       UISwipeGestureRecognizerDirectionUp :
                                       UISwipeGestureRecognizerDirectionDown)];
             [self addGestureRecognizer:gestureRec];
@@ -357,6 +329,7 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
     }
     return self;
 }
+
 
 - (CGFloat)updateHeightOfMessageView
 {
@@ -499,7 +472,6 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
 
 - (void)handleTap:(UITapGestureRecognizer *)tapGesture
 {
-    [self fadeMeOut];
     if (tapGesture.state == UIGestureRecognizerStateRecognized)
     {
         if (self.callback)
