@@ -472,7 +472,8 @@ canBeDismissedByUser:(BOOL)dismissingEnabled
 
 - (void)handleTap:(UITapGestureRecognizer *)tapGesture
 {
-    if (tapGesture.state == UIGestureRecognizerStateRecognized)
+ [self fadeMeOut];
+ if (tapGesture.state == UIGestureRecognizerStateRecognized)
     {
         if (self.callback)
         {
